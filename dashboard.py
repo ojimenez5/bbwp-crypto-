@@ -35,12 +35,6 @@ interval_map = {
 # ===========================================
 @st.cache_data(show_spinner=False)
 def descargar_datos_binance(symbol, interval="1d", limit=1000):
-    """
-    symbol: "BTC/USDT"
-    interval: one of '4h','1d','1w'
-    limit: max número de velas (<=1000 para Binance)
-    """
-    # convertir "BTC/USDT" -> "BTCUSDT"
     pair = symbol.replace("/", "")
     url = "https://api.binance.com/api/v3/klines"
     params = {"symbol": pair, "interval": interval, "limit": limit}
@@ -48,7 +42,15 @@ def descargar_datos_binance(symbol, interval="1d", limit=1000):
         r = requests.get(url, params=params, timeout=15)
         r.raise_for_status()
         data = r.json()
-        # data: [ [ open_time, open, high, low, close, volume, close_time, ... ], ... ]
+
+        if not isinstance(data, list) or len(data) == 0:
+            st.warning(f"⚠️ Binance no devolvió datos para {pair} ({interval})")
+            return None
+
+        # Mostrar primeras filas para debug
+        st.write(f"📡 Datos obtenidos para {pair} ({interval}): {len(data)} velas")
+        st.json(data[:2])  # muestra 2 primeras velas
+
         df = pd.DataFrame(data, columns=[
             "open_time", "Open", "High", "Low", "Close", "Volume",
             "close_time", "qav", "num_trades", "taker_base_av", "taker_quote_av", "ignore"
@@ -58,9 +60,9 @@ def descargar_datos_binance(symbol, interval="1d", limit=1000):
         df[["Open","High","Low","Close","Volume"]] = df[["Open","High","Low","Close","Volume"]].astype(float)
         df = df[["Open","High","Low","Close","Volume"]]
         return df
+
     except Exception as e:
-        # devolvemos None para manejar fallo en la app
-        print(f"Error descargando {symbol} intervalo {interval}: {e}")
+        st.error(f"Error descargando {pair}: {e}")
         return None
 
 # ===========================================
