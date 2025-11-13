@@ -18,7 +18,7 @@ tickers = [
     "BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT",
     "DOGE/USDT", "ADA/USDT", "AVAX/USDT", "DOT/USDT", "MATIC/USDT",
     "LINK/USDT", "LTC/USDT", "UNI/USDT", "ATOM/USDT", "NEAR/USDT",
-    "ETC/USDT", "OP/USDT", "ARB/USDT", "FIL/USDT", "APT/USDT"
+    "ETC/USDT", "OP/USDT", "ARB/USDT", "FIL/USDT", "APT/USDT", "XLM/USDT" 
 ]
 
 # ===========================================
