@@ -36,7 +36,7 @@ interval_map = {
 @st.cache_data(show_spinner=False)
 def descargar_datos_binance(symbol, interval="1d", limit=1000):
     pair = symbol.replace("/", "")
-    url = "https://api.binance.com/api/v3/klines"
+    url = "https://api.binance.us/api/v3/klines"   # ✅ versión US, sin bloqueo regional
     params = {"symbol": pair, "interval": interval, "limit": limit}
     try:
         r = requests.get(url, params=params, timeout=15)
@@ -44,12 +44,8 @@ def descargar_datos_binance(symbol, interval="1d", limit=1000):
         data = r.json()
 
         if not isinstance(data, list) or len(data) == 0:
-            st.warning(f"⚠️ Binance no devolvió datos para {pair} ({interval})")
+            st.warning(f"⚠️ Binance US no devolvió datos para {pair} ({interval})")
             return None
-
-        # Mostrar primeras filas para debug
-        st.write(f"📡 Datos obtenidos para {pair} ({interval}): {len(data)} velas")
-        st.json(data[:2])  # muestra 2 primeras velas
 
         df = pd.DataFrame(data, columns=[
             "open_time", "Open", "High", "Low", "Close", "Volume",
